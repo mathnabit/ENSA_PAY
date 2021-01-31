@@ -10,7 +10,7 @@ public class MyConfig {
     @Bean
     SimpleJaxWsServiceExporter serviceExporter() {
         SimpleJaxWsServiceExporter serviceExporter = new SimpleJaxWsServiceExporter();
-        serviceExporter.setBaseAddress("http//0.0.0.0:8888");
+        serviceExporter.setBaseAddress("http://0.0.0.0:8888/");
         return serviceExporter;
     }
 }

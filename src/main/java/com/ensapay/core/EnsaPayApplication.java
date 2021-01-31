@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.stream.Stream;
 
 @SpringBootApplication
-//@EnableAutoConfiguration(exclude={MongoAutoConfiguration.class})
+
 
 
 
