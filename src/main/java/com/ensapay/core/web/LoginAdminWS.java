@@ -6,7 +6,7 @@ import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 
 @Component
-@WebServiceClient
+@WebServiceClient(name = "LoginAdminWS")
 public class LoginAdminWS {
 
     @WebEndpoint
