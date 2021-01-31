@@ -7,6 +7,9 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 @Document(collection = "manager")
 @Data
 @AllArgsConstructor @NoArgsConstructor @ToString
