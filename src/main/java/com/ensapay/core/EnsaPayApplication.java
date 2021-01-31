@@ -23,7 +23,7 @@ public class EnsaPayApplication {
 		SpringApplication.run(EnsaPayApplication.class, args);
 	}
 
-	@Bean
+	/*@Bean
 	CommandLineRunner start(AgentRepository agentRepository) {
 		return args->{
 			agentRepository.deleteAll();
@@ -32,5 +32,5 @@ public class EnsaPayApplication {
 
 			agentRepository.findAll().forEach(System.out::println);
 		};
-	}
+	}*/
 }
