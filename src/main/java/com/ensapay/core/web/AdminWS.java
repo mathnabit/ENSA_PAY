@@ -26,7 +26,7 @@ public class AdminWS {
     //Methode pour la connexion admin
     @WebMethod
     public String loginVerified(@WebParam(name="login") String login, @WebParam(name="pass") String pass){
-        //Admin a = adminRepository.findById("6016c7e24e00f80b451febc4").get();
+
         Admin a = adminRepository.findAll().get(0);
         if(a.getLogin().equals(login) && a.getPass().equals(pass))
             return "success";
