@@ -18,6 +18,13 @@ public class Agent {
     private String id;
     private String login;
     private String pass;
-
+    private String nom;
+    private String prenom;
+    private String patente;
+    private String cin;
+    private String tel;
+    private String date_naiss;
+    private String adresse;
+    private String irc;
 
 }
