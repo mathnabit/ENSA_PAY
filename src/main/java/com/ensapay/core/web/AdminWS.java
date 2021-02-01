@@ -26,6 +26,7 @@ public class AdminWS {
     //Methode pour la connexion admin
     @WebMethod
     public String loginVerified(@WebParam(name="login") String login, @WebParam(name="pass") String pass){
+
         Admin a = adminRepository.findAll().get(0);
         if(a.getLogin().equals(login) && a.getPass().equals(pass))
             return "success";
@@ -36,15 +37,14 @@ public class AdminWS {
     //Methode pour creer un agent
     @WebMethod
     public String addNewAgent(
-            @WebParam(name="login") String login, @WebParam(name="pass") String pass,
+
             @WebParam(name="nom") String nom, @WebParam(name="prenom") String prenom,
-            @WebParam(name="patente") String patente, @WebParam(name="cin") String cin,
-            @WebParam(name="tel") String tel, @WebParam(name="date_naiss") String date_naiss,
-            @WebParam(name="adresse") String adresse, @WebParam(name="irc") String irc
+            @WebParam(name="cin") String cin,@WebParam(name="date_naiss") String date_naiss,
+            @WebParam(name="adresse") String adresse,@WebParam(name="email") String email,
+            @WebParam(name="conf_email") String conf_email, @WebParam(name="tel") String tel,
+            @WebParam(name="irc") String irc,@WebParam(name="patente") String patente
     ){
-        agentRepository.save(
-                new Agent(null,login,pass,nom,prenom,patente,cin,tel,date_naiss,adresse,irc)
-        );
+
 
         //generer identifiant
         String uniqueKey = UUID.randomUUID().toString();
@@ -59,6 +59,10 @@ public class AdminWS {
             s.append(str.charAt(index));
         }
         System.out.println(s.toString());
+
+        agentRepository.save(
+                new Agent(null,uniqueKey,s.toString(),nom,prenom,cin,date_naiss,adresse,email,conf_email,tel,irc,patente)
+        );
 
         return uniqueKey+","+s.toString() ;
     }
