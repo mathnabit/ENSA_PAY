@@ -13,6 +13,8 @@ import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -77,6 +79,8 @@ public class CMIWS {
 
 
     /* ***      AGENT        ** */
+
+    //Methode pour stocker les demandes
     @WebMethod
     public String demanderCompte(
 
@@ -90,4 +94,16 @@ public class CMIWS {
 
         return "success";
     }
+
+    //Methode pour recuperer les demandes
+    @WebMethod
+    public Demande[] recupererDemandes(){
+
+        List<Demande> listeDemandes = demandeRepository.findByResolu(false);
+        //System.out.println(listeDemandes);
+        //System.out.println( listeDemandes.toArray(new Demande[listeDemandes.size()]));
+        return listeDemandes.toArray(new Demande[listeDemandes.size()]);
+    }
+
+
 }
