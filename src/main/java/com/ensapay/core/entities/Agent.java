@@ -24,10 +24,10 @@ public class Agent {
     private String date_naiss;
     private String adresse;
     private String email;
-    private String conf_email;
     private String tel;
     private String irc;
     private String patente;
+    private String description;
 
 
 
