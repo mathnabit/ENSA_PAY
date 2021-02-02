@@ -14,10 +14,9 @@ import javax.jws.soap.SOAPBinding;
 import java.util.UUID;
 
 @Component
-@WebService(name = "AdminWS", targetNamespace = "http://spring.io/guides/gs-producing-web-service")
+@WebService(name = "CMIWS", targetNamespace = "http://spring.io/guides/gs-producing-web-service")
 @SOAPBinding(style = SOAPBinding.Style.RPC)
-public class AdminWS {
-
+public class CMIWS {
     @Autowired
     private AdminRepository adminRepository;
     @Autowired
@@ -29,9 +28,9 @@ public class AdminWS {
 
         Admin a = adminRepository.findAll().get(0);
         if(a.getLogin().equals(login) && a.getPass().equals(pass))
-            return "success";
+            return "login avec success";
         else
-            return "failed";
+            return "login ou mot de passe erroné";
     }
 
     //Methode pour creer un agent
@@ -41,12 +40,12 @@ public class AdminWS {
             @WebParam(name="nom") String nom, @WebParam(name="prenom") String prenom,
             @WebParam(name="cin") String cin,@WebParam(name="date_naiss") String date_naiss,
             @WebParam(name="adresse") String adresse,@WebParam(name="email") String email,
-            @WebParam(name="conf_email") String conf_email, @WebParam(name="tel") String tel,
-            @WebParam(name="irc") String irc,@WebParam(name="patente") String patente
+            @WebParam(name="tel") String tel,@WebParam(name="irc") String irc,
+            @WebParam(name="patente") String patente,@WebParam(name="description") String description
     ){
 
 
-        //generer identifiant
+        //generer identifiant = login
         String uniqueKey = UUID.randomUUID().toString();
         System.out.println (uniqueKey);
 
@@ -61,7 +60,7 @@ public class AdminWS {
         System.out.println(s.toString());
 
         agentRepository.save(
-                new Agent(null,uniqueKey,s.toString(),nom,prenom,cin,date_naiss,adresse,email,conf_email,tel,irc,patente)
+                new Agent(null,uniqueKey,s.toString(),nom,prenom,cin,date_naiss,adresse,email,tel,irc,patente,description)
         );
 
         return uniqueKey+","+s.toString() ;
