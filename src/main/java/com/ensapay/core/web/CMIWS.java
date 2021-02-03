@@ -11,6 +11,7 @@ import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -122,15 +123,15 @@ public class CMIWS {
 
         Demande demande = demandeRepository.findByTel(tel);
 
-        ClientBanque clientBanque = clientBanqueRepository.findByTel(tel);
-
+        //ClientBanque clientBanque = clientBanqueRepository.findByTel("6019bbd04c08b42842065e4d");
+        //System.out.println(clientBanque);
         //verifier l existence du compte
         List<Client> listesClients = clientRepository.findAll();
         boolean verif = listesClients.stream().filter(c -> c.getTel().equals(tel)).findFirst().isPresent();
 
-        System.out.println("status :" + clientBanque.isStatus() + " exsite : " + verif);
+        //System.out.println("status :" + clientBanque.isStatus() + " exsite : " + verif);
 
-        if( clientBanque.getSolde_bnq()> Integer.parseInt(demande.getTel()) && clientBanque.isStatus() && !verif)
+        if( /*clientBanque.getSolde_bnq()> Integer.parseInt(demande.getTel()) && clientBanque.isStatus() && */ !verif)
         {
             //generation du mot de passe provisoire
             String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxyz";
