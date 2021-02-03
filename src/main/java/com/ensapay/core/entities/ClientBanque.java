@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "clientsbanque")
@@ -13,10 +14,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @ToString
 public class ClientBanque {
 
+    @Id
     private String id;
     private String tel;
     private double solde_bnq;
     private boolean status;
     private boolean credit;
-    
+
 }

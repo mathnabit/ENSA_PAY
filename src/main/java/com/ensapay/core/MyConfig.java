@@ -1,8 +1,14 @@
 package com.ensapay.core;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter;
+
+import javax.activation.DataSource;
+
 
 @Configuration
 public class MyConfig {
