@@ -1,11 +1,7 @@
 package com.ensapay.core.web;
 
-import com.ensapay.core.dao.AdminRepository;
-import com.ensapay.core.dao.AgentRepository;
-import com.ensapay.core.dao.DemandeRepository;
-import com.ensapay.core.entities.Admin;
-import com.ensapay.core.entities.Agent;
-import com.ensapay.core.entities.Demande;
+import com.ensapay.core.dao.*;
+import com.ensapay.core.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +26,12 @@ public class CMIWS {
 
     @Autowired
     private DemandeRepository demandeRepository;
+
+    @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private ClientBanqueRepository clientBanqueRepository;
 
     /* ***      ADMIN        ** */
 
@@ -104,6 +106,99 @@ public class CMIWS {
         //System.out.println( listeDemandes.toArray(new Demande[listeDemandes.size()]));
         return listeDemandes.toArray(new Demande[listeDemandes.size()]);
     }
+
+    //Methode pour rejeter une demande
+    @WebMethod
+    public String rejeterDemande(@WebParam(name="id_demande") String id_demande){
+
+        demandeRepository.deleteById(id_demande);
+
+        return "success";
+    }
+
+    //Methode pour la création du compte de paiement
+    @WebMethod
+    public String newComptePayement(@WebParam(name="tel") String tel){
+
+        Demande demande = demandeRepository.findByTel(tel);
+
+        ClientBanque clientBanque = clientBanqueRepository.findByTel(tel);
+
+        //verifier l existence du compte
+        List<Client> listesClients = clientRepository.findAll();
+        boolean verif = listesClients.stream().filter(c -> c.getTel().equals(tel)).findFirst().isPresent();
+
+        System.out.println("status :" + clientBanque.isStatus() + " exsite : " + verif);
+
+        if( clientBanque.getSolde_bnq()> Integer.parseInt(demande.getTel()) && clientBanque.isStatus() && !verif)
+        {
+            //generation du mot de passe provisoire
+            String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxyz";
+            StringBuilder s = new StringBuilder(8);
+
+            for (int i = 0; i < 8; i++) {
+                int index = (int)(str.length() * Math.random());
+                s.append(str.charAt(index));
+            }
+
+            //creation du compte client
+            clientRepository.save(
+                    new Client(null,tel,s.toString(),tel,demande.getEmail(),demande.getType_cmpte())
+            );
+
+            //mettre la demande comme resolu
+            demande.setResolu(true);
+            demandeRepository.save(demande);
+
+            //envoie du mot de passe
+
+            return "success";
+        } else {
+            return "Demande de creation du compte est refusé";
+        }
+
+    }
+
+    //Methode pour recuperer la liste des creanciers
+    @WebMethod
+    public String listCreancier(){
+
+
+
+        return "success";
+    }
+
+    //Methode pour recuperer la facture ciblée
+    @WebMethod
+    public String getForms(){
+
+
+
+        return "success";
+    }
+
+    //Methode pour recuperer la facture ciblée
+    @WebMethod
+    public String getImpayes(){
+
+
+
+        return "success";
+    }
+
+    //Methode pour recuperer la facture ciblée
+    @WebMethod
+    public String confirmerPayer(){
+
+
+
+        return "success";
+    }
+
+
+
+
+
 
 
 }
