@@ -5,21 +5,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "clients")
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Client {
+public class Recharge {
 
     @Id
     private String id;
-    private String tel;
-    private String pass;
-    private String email;
-    private String type_cmpte;
-    private double solde;
-
+    private String tel_recept;
+    private int montant;
+    private Date date;
 }

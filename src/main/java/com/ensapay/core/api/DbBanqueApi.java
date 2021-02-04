@@ -24,14 +24,10 @@ public class DbBanqueApi {
 
         final String uri = "http://localhost:55241/api/client/"+tel;
 
-        //TODO: Autowire the RestTemplate in all the examples
         RestTemplate restTemplate = new RestTemplate();
 
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("id", "10665460645");
-
         ClientBanque client = restTemplate.getForObject(uri, ClientBanque.class);
-        //ResponseEntity<Client> client = restTemplate.getForEntity(uri, Client.class);
+
         //System.out.println(client);
         return client;
     }

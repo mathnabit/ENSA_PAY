@@ -18,7 +18,7 @@ public class ClientBanque {
     private String id;
     private String tel;
     private double solde_bnq;
-    private boolean status;
+    private boolean historique;
     private boolean credit;
 
 }
