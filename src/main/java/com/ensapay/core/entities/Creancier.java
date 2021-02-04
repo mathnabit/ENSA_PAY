@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "creanciers")
@@ -20,6 +21,6 @@ public class Creancier {
     private String id;
     private String nom;
     private String categorie;
-    private List<Creance> listeCreances;
+    private ArrayList<String> creances;
 
 }

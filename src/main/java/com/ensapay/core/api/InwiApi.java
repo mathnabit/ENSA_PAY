@@ -31,7 +31,7 @@ public class InwiApi {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        Recharge reponse = restTemplate.postForObject( uri, recharge, Recharge.class);
+        String reponse = restTemplate.postForObject( uri, recharge, String.class);
         
         return "Compte bien recharge";
     }

@@ -189,9 +189,9 @@ public class CMIWS {
     @WebMethod
     public Creancier[] listeCreancier(){
 
-        List<Creancier> listeCrenciers = creancierRepository.findAll();
+        List<Creancier> listeCreanciers = creancierRepository.findAll();
 
-        return listeCrenciers.toArray(new Creancier[listeCrenciers.size()]);
+        return listeCreanciers.toArray(new Creancier[listeCreanciers.size()]);
     }
 
     //Methode pour recuperer la formulaire de recharge
