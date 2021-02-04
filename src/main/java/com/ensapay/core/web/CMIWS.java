@@ -1,12 +1,14 @@
 package com.ensapay.core.web;
 
 import com.ensapay.core.api.DbBanqueApi;
+import com.ensapay.core.api.InwiApi;
 import com.ensapay.core.dao.*;
 import com.ensapay.core.entities.*;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
 import javax.jws.WebMethod;
@@ -133,9 +135,9 @@ public class CMIWS {
         List<Client> listesClients = clientRepository.findAll();
         boolean verif = listesClients.stream().filter(c -> c.getTel().equals(tel)).findFirst().isPresent();
 
-        //System.out.println("status :" + clientBanque.isStatus() + " exsite : " + verif);
+        System.out.println("status :" + clientBanque.isHistorique() + " exsite : " + verif);
 
-        if( clientBanque.getSolde_bnq()> Integer.parseInt(demande.getTel()) && clientBanque.isStatus() &&  !verif)
+        if( clientBanque.getSolde_bnq()>= Integer.parseInt(demande.getType_cmpte()) && clientBanque.isHistorique() &&  !verif)
         {
             //generation du mot de passe provisoire
             String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxyz";
@@ -148,7 +150,7 @@ public class CMIWS {
 
             //creation du compte client
             clientRepository.save(
-                    new Client(null,tel,s.toString(),tel,demande.getEmail(),demande.getType_cmpte())
+                    new Client(null,tel,s.toString(),demande.getEmail(),demande.getType_cmpte(),Integer.parseInt(demande.getType_cmpte()))
             );
 
             //mettre la demande comme resolu
@@ -164,6 +166,25 @@ public class CMIWS {
 
     }
 
+    /* ***      CLIENT        ** */
+
+    //Methode pour s authentifier
+    @WebMethod
+    public String loginClient(@WebParam(name="tel") String tel, @WebParam(name="pass") String pass){
+
+        Client client;
+        try {
+            client = clientRepository.findByTel(tel);
+
+        if(client.getTel().equals(tel) && client.getPass().equals(pass))
+            return "login avec success";
+        else
+            return "login ou mot de passe erroné";
+        } catch (Exception e){
+            return "client n existe pas";
+        }
+    }
+
     //Methode pour recuperer la liste des creanciers
     @WebMethod
     public Creancier[] listeCreancier(){
@@ -173,22 +194,53 @@ public class CMIWS {
         return listeCrenciers.toArray(new Creancier[listeCrenciers.size()]);
     }
 
-    //Methode pour recuperer la facture ciblée
+    //Methode pour recuperer la formulaire de recharge
     @WebMethod
-    public String getForms(){
+    public String postRecharge(
+            @WebParam(name="tel") String tel, @WebParam(name="tel_recept") String tel_recept,
+            @WebParam(name="montant") int montant
+    ){
 
+        //Verifier Solde et decrementer
+        Client client = clientRepository.findByTel(tel);
 
+        if( client.getSolde() >= montant ) {
 
-        return "success";
+            double nvSolde = client.getSolde() - montant;
+            client.setSolde(nvSolde);
+            clientRepository.save(client);
+
+            //Passer recharge a l api
+            InwiApi inwiApi = new InwiApi();
+
+            Recharge recharge = new Recharge(null,tel_recept,montant,null);
+
+            inwiApi.ajouterRecharge(recharge);
+
+            return "Compte bien recharge";
+
+        } else {
+            return "Solde insuffisant";
+        }
+
     }
 
-    //Methode pour recuperer la facture ciblée
+    //Methode pour recuperer les impayes de la facture ciblée
     @WebMethod
-    public String getImpayes(){
+    public String getImpayes(
+            @WebParam(name="tel") String tel, @WebParam(name="creancier") String creancier,
+            @WebParam(name="creance") String creance
+
+    ){
+
+        if(creancier.equals("REDAL")) {
+            return "success";
+        } else {
+            return "success";
+        }
 
 
 
-        return "success";
     }
 
     //Methode pour recuperer la facture ciblée
