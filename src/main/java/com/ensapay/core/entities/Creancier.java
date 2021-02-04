@@ -7,23 +7,19 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
-@XmlRootElement
-@Document(collection = "demandes")
+@Document(collection = "creanciers")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Demande {
+public class Creancier {
 
     @Id
     private String id;
-    private String type_cmpte;
     private String nom;
-    private String prenom;
-    private String tel;
-    private String email;
-    private boolean resolu;
+    private String categorie;
+    private List<Creance> listeCreances;
 
 }

@@ -1,18 +1,20 @@
 package com.ensapay.core.web;
 
+import com.ensapay.core.api.DbBanqueApi;
 import com.ensapay.core.dao.*;
 import com.ensapay.core.entities.*;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.net.URI;
+import java.util.*;
 
 @Component
 @WebService(name = "CMIWS", targetNamespace = "http://spring.io/guides/gs-producing-web-service")
@@ -32,7 +34,10 @@ public class CMIWS {
     private ClientRepository clientRepository;
 
     @Autowired
-    private ClientBanqueRepository clientBanqueRepository;
+    private CreancierRepository creancierRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     /* ***      ADMIN        ** */
 
@@ -122,16 +127,15 @@ public class CMIWS {
     public String newComptePayement(@WebParam(name="tel") String tel){
 
         Demande demande = demandeRepository.findByTel(tel);
-
-        //ClientBanque clientBanque = clientBanqueRepository.findByTel("6019bbd04c08b42842065e4d");
-        //System.out.println(clientBanque);
+        DbBanqueApi bnq = new DbBanqueApi();
+        ClientBanque clientBanque = bnq.getClient(tel);
         //verifier l existence du compte
         List<Client> listesClients = clientRepository.findAll();
         boolean verif = listesClients.stream().filter(c -> c.getTel().equals(tel)).findFirst().isPresent();
 
         //System.out.println("status :" + clientBanque.isStatus() + " exsite : " + verif);
 
-        if( /*clientBanque.getSolde_bnq()> Integer.parseInt(demande.getTel()) && clientBanque.isStatus() && */ !verif)
+        if( clientBanque.getSolde_bnq()> Integer.parseInt(demande.getTel()) && clientBanque.isStatus() &&  !verif)
         {
             //generation du mot de passe provisoire
             String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvxyz";
@@ -153,7 +157,7 @@ public class CMIWS {
 
             //envoie du mot de passe
 
-            return "success";
+            return "Compte est cree avec succes";
         } else {
             return "Demande de creation du compte est refusé";
         }
@@ -162,11 +166,11 @@ public class CMIWS {
 
     //Methode pour recuperer la liste des creanciers
     @WebMethod
-    public String listCreancier(){
+    public Creancier[] listeCreancier(){
 
+        List<Creancier> listeCrenciers = creancierRepository.findAll();
 
-
-        return "success";
+        return listeCrenciers.toArray(new Creancier[listeCrenciers.size()]);
     }
 
     //Methode pour recuperer la facture ciblée
@@ -194,6 +198,15 @@ public class CMIWS {
 
 
         return "success";
+    }
+
+
+    @WebMethod
+    public ClientBanque getClients(){
+
+        DbBanqueApi bnq = new DbBanqueApi();
+        return bnq.getClient("0665760645");
+        //return client;
     }
 
 
