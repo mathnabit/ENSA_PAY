@@ -2,12 +2,15 @@ package com.ensapay.core;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter;
+import org.springframework.web.client.RestTemplate;
 
 import javax.activation.DataSource;
+import java.time.Duration;
 
 
 @Configuration
@@ -35,5 +38,13 @@ public class MyConfig {
         return serviceExporter;
     }
 
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+
+        return builder
+                .setConnectTimeout(Duration.ofMillis(3000))
+                .setReadTimeout(Duration.ofMillis(3000))
+                .build();
+    }
 
 }
