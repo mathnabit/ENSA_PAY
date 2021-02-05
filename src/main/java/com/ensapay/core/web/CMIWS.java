@@ -2,6 +2,7 @@ package com.ensapay.core.web;
 
 import com.ensapay.core.api.DbBanqueApi;
 import com.ensapay.core.api.InwiApi;
+import com.ensapay.core.api.RedalApi;
 import com.ensapay.core.dao.*;
 import com.ensapay.core.entities.*;
 import lombok.SneakyThrows;
@@ -227,31 +228,72 @@ public class CMIWS {
 
     //Methode pour recuperer les impayes de la facture ciblée
     @WebMethod
-    public String getImpayes(
+    public Facture[] getImpayes(
             @WebParam(name="tel") String tel, @WebParam(name="creancier") String creancier,
             @WebParam(name="creance") String creance
 
     ){
 
-        if(creancier.equals("REDAL")) {
-            return "success";
+        if( creancier.equals("REDAL") ){
+
+            RedalApi redalApi = new RedalApi();
+
+            List<Facture> listeFactures = redalApi.getImpayes(tel, creance);
+
+            return listeFactures.toArray(new Facture[listeFactures.size()]);
+
         } else {
-            return "success";
+
+            return null;
         }
 
-
-
     }
 
-    //Methode pour recuperer la facture ciblée
+    //Methode pour payer une facture
     @WebMethod
-    public String confirmerPayer(){
+    public String confirmerPayer(
+                @WebParam(name="tel") String tel, @WebParam(name="creancier") String creancier,
+                @WebParam(name="creance") String creance, @WebParam(name="id_fact") String id_fact,
+                @WebParam(name="montant") double montant
+    ){
+
+        if( creancier.equals("REDAL") ){
+
+            RedalApi redalApi = new RedalApi();
+
+            //Facture facture = new Facture();
+            Client client = clientRepository.findByTel(tel);
+
+            if (client.getSolde() >= montant) {
+
+                double nvSolde = client.getSolde() - montant;
+                client.setSolde(nvSolde);
+                clientRepository.save(client);
+                
+                String reponse = redalApi.payerFacture(tel, creance,id_fact);
+
+                return reponse;
+            } else {
+
+                return "solde insuffisant pour payer la facture";
+            }
 
 
-        //apres
-        return "success";
+        } else {
+
+            return null;
+        }
     }
 
+    //Methode pour recuperer les penalites d'un client
+    @WebMethod
+    public Facture[] getPenalites( @WebParam(name="tel") String tel ){
+
+
+        return null;
+
+
+    }
 
     @WebMethod
     public ClientBanque getClients(){
