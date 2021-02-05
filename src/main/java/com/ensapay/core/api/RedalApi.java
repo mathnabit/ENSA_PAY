@@ -1,5 +1,6 @@
 package com.ensapay.core.api;
 
+import com.ensapay.core.entities.Facture;
 import com.ensapay.core.entities.Recharge;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,32 +8,54 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/factures")
+@RequestMapping("/clients")
 public class RedalApi {
 
-    @RequestMapping("/getMessage")
-    public String recupererForm(){
+    //Impayes EAU + ELECTRICITE
+    @RequestMapping
+    public List<Facture> getImpayes(@PathVariable("tel") String tel,@PathVariable("creance") String creance){
 
-        final String uri = "http://localhost:62708/api/recharge/getMessage";
+        final String uri = "http://localhost:3000/clients/"+ tel +"impaye/"+ creance +"";
 
         RestTemplate restTemplate = new RestTemplate();
 
-        String reponse = restTemplate.getForObject(uri, String.class);
+        List<Facture> reponse = (List<Facture>) restTemplate.getForObject(uri, Facture.class);
 
         return reponse;
     }
 
-    @PostMapping
-    public String ajouterRecharge(@PathVariable("recharge") Recharge recharge){
 
-        final String uri = "http://localhost:62708/api/recharge";
+
+    //Penalites EAU
+    @RequestMapping
+    public List<Facture> getPenalites(@PathVariable("tel") String tel,@PathVariable("creance") String creance){
+
+        final String uri = "http://localhost:3000/clients/"+ tel +"outdated/"+ creance + "";
 
         RestTemplate restTemplate = new RestTemplate();
 
-        Recharge reponse = restTemplate.postForObject( uri, recharge, Recharge.class);
+        List<Facture> reponse = (List<Facture>) restTemplate.getForObject(uri, Facture.class);
 
-        return "Compte bien recharge";
+        return reponse;
+    }
+
+
+
+    @PostMapping
+    public String payerFacture(@PathVariable("tel") String tel,@PathVariable("creance") String creance,
+                               @PathVariable("id_fact") String id_fact
+    ){
+
+        final String uri = "http://localhost:3000/clients/"+ tel +"paye/"+ creance +"";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        String reponse = restTemplate.postForObject( uri, id_fact, String.class);
+
+        return "Facture est payée";
     }
 
 }

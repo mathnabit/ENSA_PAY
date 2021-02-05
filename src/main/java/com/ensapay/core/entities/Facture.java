@@ -5,22 +5,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
-@Document(collection = "creanciers")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Creancier {
+public class Facture {
 
     @Id
     private String id;
-    private String nom;
-    private String categorie;
-    private ArrayList<String> creances;
+    private String ceancier;
+    private String creance;
+    private double montant;
+    private boolean paye;
+    private Date date;
 
 }
