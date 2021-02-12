@@ -16,7 +16,7 @@ public class Facture {
 
     @Id
     private String id;
-    private String ceancier;
+    private String creancier;
     private String creance;
     private double montant;
     private boolean paye;

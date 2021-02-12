@@ -1,7 +1,9 @@
 package com.ensapay.core.api;
 
 import com.ensapay.core.entities.Facture;
+import com.ensapay.core.entities.ListFactures;
 import com.ensapay.core.entities.Recharge;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,22 +17,27 @@ import java.util.List;
 public class RedalApi {
 
     //Impayes EAU + ELECTRICITE
-    @RequestMapping
-    public List<Facture> getImpayes(@PathVariable("tel") String tel,@PathVariable("creance") String creance){
+    @RequestMapping("/impaye")
+    public Facture[] getImpayes(@PathVariable("tel") String tel,@PathVariable("creance") String creance){
 
-        final String uri = "http://localhost:3000/clients/"+ tel +"impaye/"+ creance +"";
+        final String uri = "http://localhost:3000/clients/"+ tel +"/impaye/"+ creance +"";
+        //final String uri = "http://localhost:3000/clients/0766119237/impaye/EAU";
 
         RestTemplate restTemplate = new RestTemplate();
+        System.out.println("1");
+        Facture[] reponsee = restTemplate.getForObject(uri, Facture[].class);
 
-        List<Facture> reponse = (List<Facture>) restTemplate.getForObject(uri, Facture.class);
-
-        return reponse;
+        ResponseEntity<Facture[]> reponse = restTemplate.getForEntity(uri, Facture[].class);
+        System.out.println("2" + reponse.getBody()[0]);
+        //return reponse.getFactures();
+        //return reponse;
+        return reponsee;
     }
 
 
 
-    //Penalites EAU
-    @RequestMapping
+    //Penalites EAU + ELECTRICITE
+    @RequestMapping("/outdated")
     public List<Facture> getPenalites(@PathVariable("tel") String tel,@PathVariable("creance") String creance){
 
         final String uri = "http://localhost:3000/clients/"+ tel +"outdated/"+ creance + "";

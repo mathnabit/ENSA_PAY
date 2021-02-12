@@ -1,6 +1,7 @@
 package com.ensapay.core.web;
 
 import com.ensapay.core.api.DbBanqueApi;
+import com.ensapay.core.api.IamApi;
 import com.ensapay.core.api.InwiApi;
 import com.ensapay.core.api.RedalApi;
 import com.ensapay.core.dao.*;
@@ -237,14 +238,24 @@ public class CMIWS {
         if( creancier.equals("REDAL") ){
 
             RedalApi redalApi = new RedalApi();
+            System.out.println("3");
+            Facture[] listeFactures =  redalApi.getImpayes(tel, creance);
+            System.out.println("4" + listeFactures);
 
-            List<Facture> listeFactures = redalApi.getImpayes(tel, creance);
 
-            return listeFactures.toArray(new Facture[listeFactures.size()]);
+            return listeFactures;
+
+
 
         } else {
 
-            return null;
+            IamApi iamApi = new IamApi();
+            System.out.println("3");
+            Facture[] listeFactures =  iamApi.getImpayes(tel, creance);
+            System.out.println("4" + listeFactures);
+
+
+            return listeFactures;
         }
 
     }
@@ -255,9 +266,9 @@ public class CMIWS {
                 @WebParam(name="tel") String tel, @WebParam(name="creancier") String creancier,
                 @WebParam(name="creance") String creance, @WebParam(name="id_fact") String id_fact,
                 @WebParam(name="montant") double montant
-    ){
+    ) {
 
-        if( creancier.equals("REDAL") ){
+        if (creancier.equals("REDAL")) {
 
             RedalApi redalApi = new RedalApi();
 
@@ -269,8 +280,8 @@ public class CMIWS {
                 double nvSolde = client.getSolde() - montant;
                 client.setSolde(nvSolde);
                 clientRepository.save(client);
-                
-                String reponse = redalApi.payerFacture(tel, creance,id_fact);
+
+                String reponse = redalApi.payerFacture(tel, creance, id_fact);
 
                 return reponse;
             } else {
@@ -281,7 +292,22 @@ public class CMIWS {
 
         } else {
 
-            return null;
+            IamApi iamApi = new IamApi();
+
+            //Facture facture = new Facture();
+            Client client = clientRepository.findByTel(tel);
+
+            if (client.getSolde() >= montant) {
+
+                double nvSolde = client.getSolde() - montant;
+                client.setSolde(nvSolde);
+                clientRepository.save(client);
+
+                String reponse = iamApi.payerFacture(tel, id_fact);
+
+                return reponse;
+            } else
+            {  return "Solde insuffisant"; }
         }
     }
 
@@ -293,6 +319,26 @@ public class CMIWS {
         return null;
 
 
+    }
+
+    //Methode pour la consultation du solde
+    @WebMethod
+    public double consulterSolde(@WebParam(name="tel") String tel ){
+
+        Client client = clientRepository.findByTel(tel);
+        return  client.getSolde();
+        //return client;
+    }
+
+    //Methode pour la consultation du solde
+    @WebMethod
+    public String modifierPassword(@WebParam(name="tel") String tel, @WebParam(name="pass") String pass ){
+
+        Client client = clientRepository.findByTel(tel);
+        client.setPass(pass);
+        clientRepository.save(client);
+        return  "mot de passe est changé";
+        //return client;
     }
 
     @WebMethod
